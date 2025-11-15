@@ -4,11 +4,19 @@ function generate() {
     imageArr = new Array(100);
     for (var i = 0; i < 100; i++) imageArr[i] = (i%3 == 0) ? 0 : 1;
 
-    drawPixels(createConstantPatterns(), 41);
+    //drawPixels(createConstantPatterns(), 41);
 
     formatText(document.getElementById("inputText").value);
 
-    console.log(generateCodewords(formatText(document.getElementById("inputText").value)))
+    code = generateCodewords(formatText(document.getElementById("inputText").value))
+
+    console.log(code);
+
+    arr = createConstantPatterns();
+    placePixels(code, arr);
+
+    drawPixels(arr, 41);
+
 }
 
 function createConstantPatterns() {
@@ -138,6 +146,57 @@ function generateCodewords(data) {
     }
 
     return out;
+}
+
+function getBit(codewords, i) {
+    return (codewords[i >> 3] >> (7-(i&7))) & 1;
+}
+
+function isReservedPixel(x, y) {
+    if (x == 6 || y == 6) return true;
+    if (x < 9 && y < 9) return true;
+    if (x > 32 && y < 9) return true;
+    if (x < 9 && y > 32) return true;
+    if (x < 37 && x > 31 && y < 37 && y > 31) return true;
+    return false;
+}
+
+function placePixels(codewords, qrArr) {
+    var x = 40;
+    var y = 40;
+
+    var going_up = true;
+    var about_to_change_y = false;
+    
+    for (var i = 0; i < 43*4*8; ) {
+        if (!isReservedPixel(x, y)) {
+            qrArr[y*41+x] = 1-getBit(codewords, i);
+            console.log(x, y, getBit(codewords, i));
+            i++;
+        }
+
+        if (!about_to_change_y) {
+            x--;
+            about_to_change_y = true;
+        } else {
+            if (y == 0 && going_up) {
+                going_up = false;
+                x--;
+                if (x == 6) x--;
+            } else if (y == 40 && !going_up) {
+                going_up = true;
+                x--;
+            } else if (going_up) {
+                x++;
+                y--;
+            } else {
+                x++;
+                y++;
+            }
+
+            about_to_change_y = false;
+        }
+    }
 }
 
 function drawPixels(pixels, width) {
