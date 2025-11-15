@@ -5,6 +5,8 @@ function generate() {
     for (var i = 0; i < 100; i++) imageArr[i] = (i%3 == 0) ? 0 : 1;
 
     drawPixels(createConstantPatterns(), 41);
+
+    formatText(document.getElementById("inputText").value);
 }
 
 function createConstantPatterns() {
@@ -64,10 +66,27 @@ function createConstantPatterns() {
     return qrArr;
 }
 
-// function formatText(text) {
-//     bytes = new TextEncoder().encode(text);
-//     console.log(bytes);
-// }
+function formatText(text) {
+    bytes = new TextEncoder().encode(text);
+    len = text.length;
+    console.log(bytes);
+
+    output = new Array(60);
+    output[0] = 64 + (len>>4);
+    output[1] = ((len&15) << 4) + (bytes[0] >> 4);
+    for (var i = 1; i < len; i++) {
+        output[1+i] = ((bytes[i-1]&15) << 4) + (bytes[i] >> 4);
+    }
+    output[len+1] = ((bytes[len-1]&15) << 4);
+
+    padbyte = 0xec;
+    for (var i = len+2; i < 60; i++) {
+        output[i] = padbyte;
+        padbyte ^= (0xec ^ 0x11);
+    }
+
+    console.log(output);
+}
 
 function drawPixels(pixels, width) {
     height = Math.ceil(pixels.length / width);
