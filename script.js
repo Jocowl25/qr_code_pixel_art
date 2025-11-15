@@ -13,7 +13,9 @@ function generate() {
     console.log(code);
 
     arr = createConstantPatterns();
-    placePixels(code, arr, 0);
+    placePixels(code, arr, 1);
+
+    placeFormat(arr, 1);
 
     drawPixels(arr, 41);
 
@@ -115,8 +117,8 @@ function GFMult(a, b) {
 
 function polyDiv(a, b) {
     //console.log(a.slice());
-    while (a.length > 28) {
-        for (var i = 1; i < 29; i++) {
+    while (a.length > b.length-1) {
+        for (var i = 1; i < b.length; i++) {
             a[i] ^= GFMult(b[i], a[0])
         }
         a.shift();
@@ -209,6 +211,48 @@ function placePixels(codewords, qrArr, mask) {
             about_to_change_y = false;
         }
     }
+}
+
+function placeFormat(qrArr, mask) {
+    var fm = Array(15).fill(0);
+    fm[0] = 1;
+    fm[2] = mask >> 2;
+    fm[3] = (mask >> 1) & 1;
+    fm[4] = mask & 1;
+    var eccPoly = [1, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1];
+    var ecc = polyDiv(fm.slice(), eccPoly);
+    console.log(ecc);
+
+    var format = Array(15).fill(0);
+    var fmask = [1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0];
+
+    for (var i = 0; i < 5; i++) {
+        format[i] = fm[i] ^ fmask[i];
+    }
+
+    for (var i = 5; i < 15; i++) {
+        format[i] = ecc[i-5] ^ fmask[i];
+    }
+
+    for (var i = 0; i < 6; i++) {
+        qrArr[8*41+i] = 1-format[i];
+        qrArr[8+41*i] = 1-format[14-i];
+
+        qrArr[(40-i)*41+8] = 1-format[i];
+        qrArr[(40-i)+41*8] = 1-format[14-i];
+    }
+
+    qrArr[8*41+7] = 1 - format[6];
+    qrArr[8+41*7] = 1 - format[8];
+    qrArr[8+41*8] = 1 - format[7];
+
+    qrArr[34*41+8] = 1-format[6];
+    qrArr[34+41*8] = 1-format[8];
+    qrArr[33+41*8] = 1-format[7];
+
+
+
+    console.log(format);
 }
 
 function drawPixels(pixels, width) {
