@@ -1,5 +1,5 @@
-width = 19
-height = 19
+width = 17
+height = 17
 
 createPixelGrid(width, height);
 
@@ -49,6 +49,13 @@ function createPixelGrid(w, h) {
 }
 
 function setDimensions() {
+    if (document.getElementById("widthPicker").value > 18 || document.getElementById("heightPicker").value > 18) {
+        document.getElementById("sizeError").style.display = "block";
+        document.getElementById("sizeError").textContent = "Pixel art size must be at most 18x18.";
+        return;
+    }
+        document.getElementById("sizeError").style.display = "none";
+
     if (width == document.getElementById("widthPicker").value && height == document.getElementById("heightPicker").value) return;
 
     width = document.getElementById("widthPicker").value;
