@@ -1,20 +1,32 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>
-            Pixel QR Code
-        </title>
-        <link rel="stylesheet" href="style.css">
-        <script src="script.js"></script>
-    </head>
-    <body>
-        <input type="text" id="inputText">
-        <p>
-            test
-        </p>
-        <button onclick="generate()">Generate!</button>
-        <div>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pixel QR Code</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
 
+<body>
+    <div class="container">
+        <h1>Pixel QR Code Generator</h1>
+
+        <div class="input-group">
+            <label for="inputText">Enter text or URL:</label>
+            <input type="text" id="inputText" placeholder="Type something...">
+            <button onclick="generate()">Generate QR</button>
         </div>
-    </body>
+
+        <div class="pixel-art">
+            <table align="center" id="pixel-table" cellspacing="0">
+                
+            </table>
+        </div>
+
+        <div class="output">
+            <img id="qrCodeOutput" alt="QR Code will appear here">
+        </div>
+    </div>
+</body>
 </html>

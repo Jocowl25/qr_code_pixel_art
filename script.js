@@ -1,13 +1,47 @@
+table = document.getElementById("pixel-table");
+
+for (var y = 0; y < 15; y++) {
+    var line = document.createElement("tr");
+    for (var x = 0; x < 15; x++) {
+        var button = document.createElement("button");
+        button.addEventListener('click',
+            (event) => {
+                console.log(event);
+                if (event.target.old_back == "black") {
+                    event.target.style.background = "white";
+                    event.target.old_back = "white";
+                    pixel_table[event.target.id] = 0;
+                } else {
+                    event.target.style.background = "black";
+                    event.target.old_back = "black";
+                    pixel_table[event.target.id] = 1;
+                }
+            });
+        button.addEventListener('mouseover', 
+            (event) => {
+                event.target.old_back = event.target.style.background;
+                event.target.style.background = 'grey';
+            });
+        button.addEventListener('mouseout', 
+            (event) => {
+                event.target.style.backgroundColor = event.target.old_back;
+            });
+        button.style.borderRadius = 0;
+        button.style.background = "black";
+        button.id = String(y*15+x);
+        button.style.width = 5;
+        button.style.height = 5;
+        var cell = document.createElement("td");
+        cell.appendChild(button);
+        line.appendChild(cell);
+    }
+    table.appendChild(line);
+}
+
+pixel_table = new Array(15*15).fill(1);
+
+
 function generate() {
-    alert("Test");
-
-    imageArr = new Array(100);
-    for (var i = 0; i < 100; i++) imageArr[i] = (i%3 == 0) ? 0 : 1;
-
-    //drawPixels(createConstantPatterns(), 41);
-
-    formatText(document.getElementById("inputText").value);
-
     code = generateCodewords(formatText(document.getElementById("inputText").value))
 
     console.log(code);
@@ -16,6 +50,8 @@ function generate() {
     placePixels(code, arr, 1);
 
     placeFormat(arr, 1);
+
+    replaceArt(arr, pixel_table);
 
     drawPixels(arr, 41);
 
@@ -255,6 +291,14 @@ function placeFormat(qrArr, mask) {
     console.log(format);
 }
 
+function replaceArt(pixels, replacement) {
+    for (var y = 0; y < 15; y++) {
+        for (var x = 0; x < 15; x++) {
+            pixels[(y+13)*41+x+13] = 1-replacement[y*15+x];
+        }
+    }
+}
+
 function drawPixels(pixels, width) {
     var height = Math.ceil(pixels.length / width);
 
@@ -278,6 +322,6 @@ function drawPixels(pixels, width) {
 
     var img = new Image();
 
-    img.src = canvas.toDataURL('image/png');
-    document.body.appendChild(img);
+    img.src = canvas.toDataURL('image/svg');
+    document.getElementById("qrCodeOutput").src = img.src;
 }
