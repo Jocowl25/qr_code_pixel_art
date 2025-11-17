@@ -19,15 +19,7 @@ blackbutton.addEventListener("click",()=>{
 
 document.querySelector(".reset").addEventListener("click",()=>{
     buttonArray.forEach((button)=>{
-                    if (!colorWhite) {
-                        button.style.background = "white";
-                        button.old_back = "white";
-                        pixel_table[button.id] = 0;
-                    } else {
-                        button.style.background = "black";
-                        button.old_back = "black";
-                        pixel_table[button.id] = 1;
-                    }
+        changeColor(button)      
     })
 })
 
@@ -36,6 +28,17 @@ createPixelGrid(width, height);
 document.body.addEventListener("mouseup",()=>{
     drawing=false
 })
+function changeColor(button){
+    if (!colorWhite) {
+        button.style.background = "white";
+        button.old_back = "white";
+        pixel_table[button.id] = 0;
+    } else {
+        button.style.background = "black";
+        button.old_back = "black";
+        pixel_table[button.id] = 1;
+    }
+}
 
 function createPixelGrid(w, h) {
     table = document.getElementById("pixel-table");
@@ -51,15 +54,8 @@ function createPixelGrid(w, h) {
                 (event) => {
                     drawing=true
                        console.log(event);
-                    if (!colorWhite) {
-                        event.target.style.background = "white";
-                        event.target.old_back = "white";
-                        pixel_table[event.target.id] = 0;
-                    } else {
-                        event.target.style.background = "black";
-                        event.target.old_back = "black";
-                        pixel_table[event.target.id] = 1;
-                    }
+                        changeColor(event.target)      
+
                 });
             button.addEventListener('mouseover', 
                 (event) => {
@@ -68,15 +64,7 @@ function createPixelGrid(w, h) {
 
                     if(drawing){
                         console.log(event);
-                    if (!colorWhite) {
-                        event.target.style.background = "white";
-                        event.target.old_back = "white";
-                        pixel_table[event.target.id] = 0;
-                    } else {
-                        event.target.style.background = "black";
-                        event.target.old_back = "black";
-                        pixel_table[event.target.id] = 1;
-                    }
+                        changeColor(event.target)      
                     }
                 });
             button.addEventListener('mouseout', 
