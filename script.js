@@ -41,6 +41,7 @@ function changeColor(button){
 }
 
 function createPixelGrid(w, h) {
+    buttonArray=[]
     table = document.getElementById("pixel-table");
 
     table.innerHTML = "";
