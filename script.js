@@ -31,11 +31,12 @@ document.addEventListener("keypress",(e)=>{
     }
 })
 
-createPixelGrid(width, height);
-
 document.body.addEventListener("mouseup",()=>{
     drawing=false
 })
+
+createPixelGrid(width, height);
+
 
 function setColor(value){
     if(value){
